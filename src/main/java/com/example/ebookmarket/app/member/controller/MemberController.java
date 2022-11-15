@@ -25,6 +25,10 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    /**
+     * @return 로그인 페이지
+     */
+
     @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
     public String loginForm() {
@@ -32,14 +36,22 @@ public class MemberController {
         return "member/login";
     }
 
+    /**
+     * @return 회원가입 페이지
+     */
+
     @PreAuthorize("isAnonymous()")
     @GetMapping("/join")
-    public String joinForm(@RequestParam(value = "msg", required = false) String msg, Model model) {
-
-        model.addAttribute("msg", msg);
+    public String joinForm() {
 
         return "member/join";
     }
+
+    /**
+     * 회원가입 로직
+     * @param joinDto
+     * @return 로그인 페이지로 redirect + 성공 메세지
+     */
 
     @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
@@ -53,6 +65,32 @@ public class MemberController {
 
     }
 
+    /**
+     * 아이디 중복 체크 로직
+     * @param username
+     * @return HTTP 상태 메세지
+     */
+
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/checkUsername")
+    public ResponseEntity checkUsername(@RequestBody String username) {
+
+        boolean isUsable = memberService.checkUsername(username);
+
+        if (isUsable) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+
+        return new ResponseEntity(HttpStatus.CONFLICT);
+
+    }
+
+    /**
+     * @param member
+     * @param model
+     * @return 사용자 정보 페이지
+     */
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/profile")
     public String profile(@AuthenticationPrincipal MemberContext member, Model model) {
@@ -61,12 +99,23 @@ public class MemberController {
         return "member/profile";
     }
 
+    /**
+     * @return 작가 등록 페이지
+     */
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/beAuthor")
     public String beAuthorForm() {
 
         return "member/beAuthor";
     }
+
+    /**
+     * 작가 등록 로직
+     * @param memberContext
+     * @param nickname
+     * @return 사용자 정보 페이지 redirect
+     */
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/beAuthor")
@@ -81,6 +130,12 @@ public class MemberController {
 
         return "member/profile";
     }
+
+    /**
+     * 작가명 중복 확인 로직
+     * @param nickname
+     * @return Http 상태 메시지
+     */
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/checkNickname")
@@ -97,12 +152,23 @@ public class MemberController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    /**
+     * @return 비밀번호 수정 페이지
+     */
+
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/modifyPassword")
     public String modifyPasswordForm() {
 
         return "member/modifyPassword";
     }
+
+    /**
+     * 기존 비밀번호 확인 로직
+     * @param memberContext
+     * @param password
+     * @return Http 상태 메시지
+     */
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/checkPassword")
@@ -118,6 +184,13 @@ public class MemberController {
 
     }
 
+    /**
+     * 비밀번호 수정 로직
+     * @param memberContext
+     * @param password
+     * @return 사용자 정보 페이지 redirect
+     */
+
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modifyPassword")
     public String modifyPassword(@AuthenticationPrincipal MemberContext memberContext, String password) {
@@ -128,19 +201,7 @@ public class MemberController {
 
     }
 
-    @PreAuthorize("isAnonymous()")
-    @PostMapping("/checkUsername")
-    public ResponseEntity checkUsername(@RequestBody String username) {
 
-        boolean isUsable = memberService.checkUsername(username);
-
-        if (isUsable) {
-            return new ResponseEntity(HttpStatus.OK);
-        }
-
-        return new ResponseEntity(HttpStatus.CONFLICT);
-
-    }
 
 
 
