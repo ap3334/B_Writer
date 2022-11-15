@@ -97,6 +97,36 @@ public class MemberController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/modifyPassword")
+    public String modifyPasswordForm() {
+
+        return "member/modifyPassword";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/checkPassword")
+    public ResponseEntity checkPassword(@AuthenticationPrincipal MemberContext memberContext, @RequestBody String password) {
+
+        boolean isAuthenticated = memberService.checkPassword(memberContext.getUsername(), password);
+
+        if (isAuthenticated) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/modifyPassword")
+    public String modifyPassword(@AuthenticationPrincipal MemberContext memberContext, String password) {
+
+        memberService.modifyPassword(memberContext.getUsername(), password);
+
+        return "redirect:/member/profile";
+
+    }
 
 
 }

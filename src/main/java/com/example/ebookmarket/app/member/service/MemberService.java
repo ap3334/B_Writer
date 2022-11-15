@@ -10,10 +10,10 @@ import com.example.ebookmarket.app.member.repository.MemberRepository;
 import com.example.ebookmarket.app.security.dto.MemberContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,14 +84,49 @@ public class MemberService {
 
     public boolean checkDuplicateNickname(String nickname) {
 
-        Optional<Member> opMember = memberRepository.findMemberByNickname(nickname);
+        Optional<Member> opMember = memberRepository.findByNickname(nickname);
 
         if (opMember.isPresent()) {
-            log.debug(opMember.get().getNickname());
             return true;
         } else {
             return false;
         }
+
+    }
+
+    public boolean checkPassword(String username, String password) {
+
+        Optional<Member> opMember = memberRepository.findByUsername(username);
+
+        if (opMember.isEmpty()) {
+            throw new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다.");
+        }
+
+        Member member = opMember.get();
+
+        log.debug(member.getPassword());
+        log.debug(passwordEncoder.encode(password));
+
+        if (passwordEncoder.matches(password, member.getPassword())) {
+            return true;
+        }
+
+        return false;
+
+    }
+
+    @Transactional
+    public void modifyPassword(String username, String password) {
+
+        Optional<Member> opMember = memberRepository.findByUsername(username);
+
+        if (opMember.isEmpty()) {
+            throw new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다.");
+        }
+
+        Member member = opMember.get();
+
+        member.changePassword(passwordEncoder.encode(password));
 
     }
 }
