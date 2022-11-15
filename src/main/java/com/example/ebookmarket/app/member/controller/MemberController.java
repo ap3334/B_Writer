@@ -1,6 +1,7 @@
 package com.example.ebookmarket.app.member.controller;
 
 import com.example.ebookmarket.app.member.dto.JoinDto;
+import com.example.ebookmarket.app.member.entity.Member;
 import com.example.ebookmarket.app.member.service.MemberService;
 import com.example.ebookmarket.app.security.dto.MemberContext;
 import com.example.ebookmarket.util.Util;
@@ -58,5 +59,23 @@ public class MemberController {
         return "member/profile";
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/beAuthor")
+    public String beAuthorForm() {
+
+        return "member/beAuthor";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/beAuthor")
+    public String beAuthor(@AuthenticationPrincipal MemberContext memberContext,
+                           String nickname) {
+
+        Member member = memberContext.getMember();
+
+        memberService.beAuthor(member, nickname);
+
+        return "member/profile";
+    }
 
 }

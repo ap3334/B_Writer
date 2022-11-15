@@ -2,10 +2,7 @@ package com.example.ebookmarket.app.member.entity;
 
 import com.example.ebookmarket.app.base.BaseEntity;
 import com.example.ebookmarket.app.member.AuthLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -55,4 +52,13 @@ public class Member extends BaseEntity {
         return false;
 
     }
+
+    public void setNickname(String nickname) {
+
+        if (this.nickname == null) {
+            this.nickname = nickname;
+        }
+
+    }
+
 }

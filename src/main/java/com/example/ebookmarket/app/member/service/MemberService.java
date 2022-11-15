@@ -4,12 +4,20 @@ import com.example.ebookmarket.app.email.service.EmailSendService;
 import com.example.ebookmarket.app.member.AuthLevel;
 import com.example.ebookmarket.app.member.dto.JoinDto;
 import com.example.ebookmarket.app.member.entity.Member;
+import com.example.ebookmarket.app.member.exception.AlreadyExistNicknameException;
 import com.example.ebookmarket.app.member.exception.AlreadyJoinException;
 import com.example.ebookmarket.app.member.repository.MemberRepository;
+import com.example.ebookmarket.app.security.dto.MemberContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,4 +50,36 @@ public class MemberService {
 
         return member;
     }
+
+    @Transactional
+    public Member beAuthor(Member member, String nickname) {
+
+        Optional<Member> opMember = memberRepository.findByNickname(nickname);
+
+        if (opMember.isPresent()) {
+            throw new AlreadyExistNicknameException();
+        }
+
+        opMember = memberRepository.findById(member.getId());
+        opMember.get().setNickname(nickname);
+
+        forceAuthentication(opMember.get());
+
+        return opMember.get();
+    }
+
+    private void forceAuthentication(Member member) {
+        MemberContext memberContext = new MemberContext(member, member.getAuthorities());
+
+        UsernamePasswordAuthenticationToken authentication =
+                UsernamePasswordAuthenticationToken.authenticated(
+                        memberContext,
+                        member.getPassword(),
+                        memberContext.getAuthorities()
+                );
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+    }
+
 }
