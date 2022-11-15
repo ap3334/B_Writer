@@ -9,6 +9,7 @@ import com.example.ebookmarket.app.member.exception.AlreadyJoinException;
 import com.example.ebookmarket.app.member.repository.MemberRepository;
 import com.example.ebookmarket.app.security.dto.MemberContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -54,13 +56,11 @@ public class MemberService {
     @Transactional
     public Member beAuthor(Member member, String nickname) {
 
-        Optional<Member> opMember = memberRepository.findByNickname(nickname);
-
-        if (opMember.isPresent()) {
+        if (checkDuplicateNickname(nickname)) {
             throw new AlreadyExistNicknameException();
         }
 
-        opMember = memberRepository.findById(member.getId());
+        Optional<Member> opMember = memberRepository.findById(member.getId());
         opMember.get().setNickname(nickname);
 
         forceAuthentication(opMember.get());
@@ -82,4 +82,16 @@ public class MemberService {
         SecurityContextHolder.setContext(context);
     }
 
+    public boolean checkDuplicateNickname(String nickname) {
+
+        Optional<Member> opMember = memberRepository.findMemberByNickname(nickname);
+
+        if (opMember.isPresent()) {
+            log.debug(opMember.get().getNickname());
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }

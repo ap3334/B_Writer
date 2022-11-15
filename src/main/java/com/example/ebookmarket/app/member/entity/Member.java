@@ -7,7 +7,10 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class Member extends BaseEntity {
 
     private String email;
 
+    @Enumerated(EnumType.STRING)
     private AuthLevel authLevel;
 
 

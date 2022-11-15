@@ -7,6 +7,8 @@ import com.example.ebookmarket.app.security.dto.MemberContext;
 import com.example.ebookmarket.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -73,9 +75,28 @@ public class MemberController {
 
         Member member = memberContext.getMember();
 
+        log.debug(nickname);
+
         memberService.beAuthor(member, nickname);
 
         return "member/profile";
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/checkNickname")
+    public ResponseEntity checkNickname(@RequestBody String nickname) {
+
+        boolean isDuplicated = memberService.checkDuplicateNickname(nickname);
+
+        log.debug(nickname);
+
+        if (isDuplicated) {
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
 
 }

@@ -35,6 +35,44 @@
 
                     form.submit();
                     MemberBeAuthor__submitDone = true;
+                };
+
+                $(document).ready(function () {
+                    $("#duplicateBtn").click(function() {
+                        checkDuplicate();
+                    });
+
+                    $("#resetBtn").click(function() {
+                        $("#nickname").removeAttr("readonly");
+                        $("#duplicateBtn").attr("type", "button");
+                        $("#resetBtn").attr("type", "hidden");
+                        $("#startBtn").attr("type", "hidden");
+                    });
+
+                });
+
+                function checkDuplicate() {
+
+                    var nickname = $("#nickname").val().trim();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/member/checkNickname",
+                        data: nickname,
+                        contentType: "text/plain; utf-8",
+                        success: function (result) {
+                            successModal("해당 필명은 사용가능한 필명입니다.");
+
+                            $("#nickname").attr("readonly", true);
+                            $("#duplicateBtn").attr("type", "hidden");
+                            $("#resetBtn").attr("type", "reset");
+                            $("#startBtn").attr("type", "submit");
+                        },
+                        error: function (error) {
+                            errorModal("해당 필명은 사용하실 수 없습니다.");
+                        }
+                    })
+
                 }
             </script>
 
@@ -45,13 +83,14 @@
                     <label class="label">
                         <span class="label-text">필명</span>
                     </label>
-                    <input type="text" name="nickname"
+                    <input type="text" id="nickname" name="nickname"
                            placeholder="필명 - ⚠ 필명은 수정할 수 없습니다." class="input input-bordered" maxlength="50">
                 </div>
 
-                <input class="btn btn-primary" type="submit" value="필명 중복 체크">
+                <input class="btn btn-secondary" id="duplicateBtn" type="button" value="필명 중복 체크">
+                <input class="btn btn-secondary" id="resetBtn" type="hidden" value="초기화">
 
-                <input class="btn btn-primary" type="submit" value="작가 활동 시작">
+                <input class="btn btn-primary" id="startBtn" type="hidden" value="작가 활동 시작">
             </form>
         </div>
 
