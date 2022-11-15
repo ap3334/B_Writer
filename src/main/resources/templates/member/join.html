@@ -75,6 +75,7 @@
                 }
             </script>
 
+            <input type="hidden" id="msg" name="msg" th:value="${msg}">
 
             <form th:action method="POST" class="flex flex-col gap-3"
                   onsubmit="MemberJoin__submit(this); return false;">
