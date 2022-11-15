@@ -128,5 +128,20 @@ public class MemberController {
 
     }
 
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/checkUsername")
+    public ResponseEntity checkUsername(@RequestBody String username) {
+
+        boolean isUsable = memberService.checkUsername(username);
+
+        if (isUsable) {
+            return new ResponseEntity(HttpStatus.OK);
+        }
+
+        return new ResponseEntity(HttpStatus.CONFLICT);
+
+    }
+
+
 
 }

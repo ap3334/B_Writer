@@ -73,19 +73,67 @@
                     form.submit();
                     MemberJoin__submitDone = true;
                 }
+
+                $(document).ready(function () {
+                    $("#check-btn").click(function() {
+                        checkUsername();
+                    });
+                    $("#reset-btn").click(function() {
+                        $("#username").attr("readonly", false);
+                        $("#reset-btn").attr("disabled", true);
+                        $("#check-btn").attr("disabled", false);
+                        $("#join-btn").attr("disabled", true);
+                        $("#join-btn").attr("value", "회원가입 ⚠️아이디 중복확인 필요");
+                    });
+                });
+
+                function checkUsername() {
+
+                    var username = $("#username").val().trim();
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/member/checkUsername",
+                        data: username,
+                        contentType: "text/plain; utf-8",
+                        success: function (result) {
+                            successModal("사용가능한 아이디입니다.");
+
+                            $("#username").attr("readonly", true);
+                            $("#check-btn").attr("disabled", true);
+                            $("#reset-btn").attr("disabled", false);
+                            $("#join-btn").attr("disabled", false);
+                            $("#join-btn").attr("value", "회원가입");
+                        },
+                        error: function (error) {
+                            errorModal("사용가능하지 않은 아이디입니다.");
+                        }
+                    })
+
+                }
+
             </script>
 
             <input type="hidden" id="msg" name="msg" th:value="${msg}">
 
             <form th:action method="POST" class="flex flex-col gap-3"
                   onsubmit="MemberJoin__submit(this); return false;">
+
                 <div class="form-control">
                     <label class="label">
                         <span class="label-text">아이디</span>
                     </label>
-                    <input autofocus type="text" name="username" placeholder="아이디" class="input input-bordered"
-                           maxlength="50">
+                    <div class="grid grid-cols-2 mt-2 gap-2">
+
+                        <input autofocus type="text" name="username" id="username" placeholder="아이디" class="input input-bordered"
+                            maxlength="50">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="button" id="check-btn" class="btn btn-info" value="중복 확인">
+                            <input type="reset" id="reset-btn" class="btn btn-info" value="초기화" disabled>
+                        </div>
+                    </div>
                 </div>
+
 
                 <div class="form-control">
                     <label class="label">
@@ -112,7 +160,7 @@
 
                 <div class="grid grid-cols-2 mt-2 gap-2">
                     <a href="/member/login" class="btn btn-secondary btn-outline">로그인</a>
-                    <input class="btn btn-primary" type="submit" value="회원가입">
+                    <input class="btn btn-primary" id="join-btn" type="submit" value="회원가입 ⚠️아이디 중복확인 필요" disabled>
                 </div>
 
                 <div class="flex justify-center">

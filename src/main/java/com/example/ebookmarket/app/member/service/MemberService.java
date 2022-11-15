@@ -129,4 +129,17 @@ public class MemberService {
         member.changePassword(passwordEncoder.encode(password));
 
     }
+
+    public boolean checkUsername(String username) {
+
+        Optional<Member> opMember = memberRepository.findByUsername(username);
+
+        if (opMember.isPresent()) {
+            return false;
+        }
+
+        return true;
+
+    }
+
 }
