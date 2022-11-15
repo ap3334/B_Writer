@@ -7,8 +7,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.Entity;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,4 +32,18 @@ public class Member extends BaseEntity {
 
     private AuthLevel authLevel;
 
+
+    public List<GrantedAuthority> getAuthorities() {
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+
+        authorities.add(new SimpleGrantedAuthority(AuthLevel.USER.name()));
+
+        if (nickname != null) {
+            authorities.add(new SimpleGrantedAuthority(AuthLevel.AUTHOR.name()));
+        }
+
+        return authorities;
+
+    }
 }

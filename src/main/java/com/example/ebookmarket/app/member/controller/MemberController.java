@@ -5,6 +5,7 @@ import com.example.ebookmarket.app.member.service.MemberService;
 import com.example.ebookmarket.util.Util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,12 +20,14 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @PreAuthorize("isAnonymous()")
     @GetMapping("/login")
     public String loginForm() {
 
         return "member/login";
     }
 
+    @PreAuthorize("isAnonymous()")
     @GetMapping("/join")
     public String joinForm(@RequestParam(value = "msg", required = false) String msg, Model model) {
 
@@ -33,6 +36,7 @@ public class MemberController {
         return "member/join";
     }
 
+    @PreAuthorize("isAnonymous()")
     @PostMapping("/join")
     public String join(@Valid JoinDto joinDto) {
 
