@@ -46,4 +46,13 @@ public class Member extends BaseEntity {
         return authorities;
 
     }
+
+    public boolean hasAuthority(String authority) {
+
+        if (this.authLevel.name().equals(authority)) {
+            return true;
+        }
+        return false;
+
+    }
 }

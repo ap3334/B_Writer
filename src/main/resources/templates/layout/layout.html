@@ -59,6 +59,11 @@
             </a>
             <form name="logoutForm" method="POST" th:action="@{/member/logout}" hidden></form>
 
+            <a href="/member/profile" class="inline-flex" sec:authorize="isAuthenticated()">
+                <i class="fa-solid fa-user"></i>
+                <span class="ml-[2px] hidden lg:block" th:text="|${#authentication.principal.username}"></span>
+            </a>
+
             <a href="/post/write" class="inline-flex">
                 <i class="fa-solid fa-pen"></i>
                 <span class="ml-[2px] hidden lg:block">
