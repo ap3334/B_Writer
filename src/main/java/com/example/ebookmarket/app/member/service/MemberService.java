@@ -1,5 +1,6 @@
 package com.example.ebookmarket.app.member.service;
 
+import com.example.ebookmarket.app.email.service.EmailSendService;
 import com.example.ebookmarket.app.member.AuthLevel;
 import com.example.ebookmarket.app.member.dto.JoinDto;
 import com.example.ebookmarket.app.member.entity.Member;
@@ -15,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+
+    private final EmailSendService emailSendService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -34,6 +37,8 @@ public class MemberService {
                 .build();
 
         memberRepository.save(member);
+
+        emailSendService.sendForJoin(member.getEmail());
 
         return member;
     }
