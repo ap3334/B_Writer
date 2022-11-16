@@ -25,10 +25,6 @@ public class SecurityConfig {
                 .csrf(
                         csrf -> csrf.disable()
                 )
-                .authorizeRequests(
-                        authorizeRequests -> authorizeRequests.antMatchers("/**")
-                                .permitAll()
-                )
                 .formLogin(
                         formLogin -> formLogin
                                 .loginPage("/member/login")

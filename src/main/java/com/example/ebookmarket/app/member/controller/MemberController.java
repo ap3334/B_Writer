@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -143,8 +144,6 @@ public class MemberController {
 
         boolean isDuplicated = memberService.checkDuplicateNickname(nickname);
 
-        log.debug(nickname);
-
         if (isDuplicated) {
             return new ResponseEntity(HttpStatus.CONFLICT);
         }
@@ -201,8 +200,74 @@ public class MemberController {
 
     }
 
+    /**
+     * @return 아이디 찾기 페이지
+     */
 
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/findUsername")
+    public String findUsernameForm() {
 
+        return "member/findUsername";
+    }
+
+    /**
+     * 아이디 찾기 로직
+     * @param email
+     * @param model
+     * @return 찾은 아이디 페이지
+     */
+
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/findUsername")
+    public String findUsername(String email, Model model) {
+
+        List<Member> members = memberService.findUsernames(email);
+
+        model.addAttribute("members", members);
+
+        return "member/foundUsernames";
+
+    }
+
+    /**
+     * @return 비밀번호 찾기 페이지
+     */
+
+    @PreAuthorize("isAnonymous()")
+    @GetMapping("/findPassword")
+    public String findPasswordForm() {
+
+        System.out.println("ccccc");
+
+        return "member/findPassword";
+    }
+
+    /**
+     * 비밀번호 찾기 로직
+     * @param username
+     * @param email
+     * @return 찾은 아이디 페이지
+     */
+
+    @PreAuthorize("isAnonymous()")
+    @PostMapping("/findPassword")
+    public String findPassword(String username, String email) {
+
+        log.debug(username);
+
+        boolean isAuthenticated = memberService.findPassword(username, email);
+
+        if (isAuthenticated) {
+            String msg = Util.url.encode("임시 비밀번호가 이메일로 발송되었습니다.");
+            return "redirect:/member/login?username=%s&msg=%s".formatted(username, msg);
+        }
+
+        String msg = Util.url.encode("아이디와 이메일 사용자 정보가 일치하지 않습니다.");
+
+        return "redirect:/member/findPassword?username=%s&msg=%s".formatted(username, msg);
+
+    }
 
 
 }

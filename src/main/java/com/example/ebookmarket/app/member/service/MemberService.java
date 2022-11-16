@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -142,4 +143,30 @@ public class MemberService {
 
     }
 
+    public List<Member> findUsernames(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+    @Transactional
+    public boolean findPassword(String username, String email) {
+
+        Optional<Member> opMember = memberRepository.findByUsername(username);
+
+        if (opMember.isEmpty()) {
+            throw new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다.");
+        }
+
+        Member member = opMember.get();
+
+        if (member.getEmail().equals(email)) {
+            String tempPassword = emailSendService.sendForFindPassword(email);
+
+            modifyPassword(username, tempPassword);
+
+            return true;
+        }
+
+        return false;
+
+    }
 }

@@ -6,6 +6,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class EmailSendService {
@@ -25,6 +27,26 @@ public class EmailSendService {
 
     }
 
+    public String sendForFindPassword(String email) {
+
+        String tempPassword = makeTempPassword();
+
+        SendEmailDto emailDto = SendEmailDto.builder()
+                .address(email)
+                .title("EBOOKS - MARKET 임시 비밀번호 이메일입니다.")
+                .message("안녕하세요. EBOOKS - MARKET 임시 비밀번호는 🔑 %s입니다.".formatted(tempPassword))
+                .build();
+
+        send(emailDto);
+
+        return tempPassword;
+
+    }
+
+    private String makeTempPassword() {
+        return UUID.randomUUID().toString().replaceAll("-", "@").substring(0, 10);
+    }
+
     private void send(SendEmailDto emailDto) {
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -37,4 +59,6 @@ public class EmailSendService {
         mailSender.send(message);
 
     }
+
+
 }

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layout/layout.html}">
+
+<head>
+    <title>아이디 찾기</title>
+</head>
+
+<body>
+<main layout:fragment="main">
+    <section class="section section-login flex-grow flex flex-col items-center justify-center">
+
+        <div class="max-w-md w-full px-2 pt-4">
+            <h1 class="font-bold text-lg">
+                <i class="fa-solid fa-fingerprint"></i>
+
+                아이디 찾기
+            </h1>
+
+            <script>
+                $(document).ready(function () {
+                    $("#login-btn").click(function() {
+                        login();
+                    });
+                    $("#find-password-btn").click(function() {
+                        findPassword();
+                    });
+                });
+
+                function login() {
+
+                    var checkedId = document.querySelector('input[name="username"]:checked').value;
+
+                    location.href = "/member/login?username=" + checkedId;
+
+                };
+
+
+                function findPassword() {
+
+                    var checkedId = document.querySelector('input[name="username"]:checked').value;
+
+                    location.href = "/member/findPassword?username=" + checkedId;
+
+                };
+
+            </script>
+
+            <div class="flex flex-col gap-3">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">아이디 내역</span>
+                    </label>
+                    <div th:each="member : ${members}" class="mt-2">
+                        <label class="flex">
+                            <input type="radio" name="username" maxlength="50" class="mx-2" th:value="${member.username}">
+                            [[${member.username}]]
+                        </label>
+                    </div>
+                </div>
+
+                <div class="alert alert-light" role="alert">
+                    로그인 또는 비밀번호 찾기를 하고 싶으신 경우 해당 아이디를 선택하고 클릭해주세요.
+                </div>
+
+                <div class="flex justify-center">
+                    <a class="btn btn-link" id="login-btn">로그인</a>
+                    <a class="btn btn-link" id="find-password-btn">비밀번호 찾기</a>
+                </div>
+            </form>
+        </div>
+
+    </section>
+
+</main>
+</body>
+</html>
