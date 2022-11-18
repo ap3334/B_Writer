@@ -2,12 +2,14 @@ package com.example.ebookmarket.app.member.entity;
 
 import com.example.ebookmarket.app.base.BaseEntity;
 import com.example.ebookmarket.app.member.AuthLevel;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
