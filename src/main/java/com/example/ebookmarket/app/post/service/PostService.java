@@ -111,4 +111,9 @@ public class PostService {
         applyPostTags(post, postFormDto.getPostTagContents());
 
     }
+
+    @Transactional
+    public void deletePost(Post post) {
+        postRepository.delete(post);
+    }
 }

@@ -101,4 +101,24 @@ public class PostController {
 
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("{id}/remove")
+    public String remove(@PathVariable Long id, @AuthenticationPrincipal MemberContext memberContext) {
+
+        Post post = postService.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당 id의 글은 존재하지 않습니다."));
+
+        Member member = memberContext.getMember();
+
+        if (postService.actorCanHandle(member, post) == false) {
+            throw new ActorCanNotModifyException();
+        }
+
+        postService.deletePost(post);
+
+        String msg = Util.url.encode("글이 삭제되었습니다.");
+
+        return "redirect:/post/list?msg=%s".formatted(msg);
+    }
+
 }
