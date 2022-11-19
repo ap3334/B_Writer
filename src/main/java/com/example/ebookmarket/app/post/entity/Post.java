@@ -38,6 +38,12 @@ public class Post extends BaseEntity {
     @Column(columnDefinition = "LONGTEXT")
     private String contentHtml;
 
+    public void modifyPost(String subject, String content, String contentHtml) {
+        this.subject = subject;
+        this.content = content;
+        this.contentHtml = contentHtml;
+    }
+
     public String getExtra_postTagLinks() {
         Map<String, Object> extra = getExtra();
 
@@ -68,6 +74,26 @@ public class Post extends BaseEntity {
 
     public String getForPrintContentHtml() {
         return contentHtml.replaceAll("toastui-editor-ww-code-block-highlighting", "");
+    }
+
+    public String getExtra_inputValue_hashTagContents() {
+        Map<String, Object> extra = getExtra();
+
+        if (extra.containsKey("postHashTags") == false) {
+            return "";
+        }
+
+        List<PostHashTag> postTags = (List<PostHashTag>) extra.get("postHashTags");
+
+        if (postTags.isEmpty()) {
+            return "";
+        }
+
+        return postTags
+                .stream()
+                .map(postTag -> "#" + postTag.getPostKeyword().getContent())
+                .sorted()
+                .collect(Collectors.joining(" "));
     }
 
 }

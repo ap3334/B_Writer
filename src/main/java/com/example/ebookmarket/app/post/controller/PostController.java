@@ -12,12 +12,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -62,6 +60,45 @@ public class PostController {
         model.addAttribute("post", post);
 
         return "post/detail";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}/modify")
+    public String modifyForm(@PathVariable Long id, @AuthenticationPrincipal MemberContext memberContext, Model model) {
+
+        Post post = postService.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당 id의 글은 존재하지 않습니다."));
+
+        Member member = memberContext.getMember();
+
+        if (postService.actorCanHandle(member, post) == false) {
+            throw new ActorCanNotModifyException();
+        }
+
+        model.addAttribute("post", post);
+
+        return "post/modify";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("{id}/modify")
+    public String modify(@PathVariable Long id, @Valid PostFormDto postFormDto, @AuthenticationPrincipal MemberContext memberContext) {
+
+        Post post = postService.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("해당 id의 글은 존재하지 않습니다."));
+
+        Member member = memberContext.getMember();
+
+        if (postService.actorCanHandle(member, post) == false) {
+            throw new ActorCanNotModifyException();
+        }
+
+        postService.modify(post, postFormDto);
+
+        String msg = Util.url.encode("글이 수정되었습니다.");
+
+        return "redirect:/post/%d?msg=%s".formatted(id, msg);
+
     }
 
 }

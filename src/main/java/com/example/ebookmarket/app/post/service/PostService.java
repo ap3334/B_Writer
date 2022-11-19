@@ -103,4 +103,12 @@ public class PostService {
 
         return postHashTagService.getPostTags(post);
     }
+
+    @Transactional
+    public void modify(Post post, PostFormDto postFormDto) {
+
+        post.modifyPost(postFormDto.getSubject(), postFormDto.getContent(), postFormDto.getContentHtml());
+        applyPostTags(post, postFormDto.getPostTagContents());
+
+    }
 }
