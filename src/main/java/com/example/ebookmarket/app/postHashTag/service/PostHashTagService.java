@@ -53,7 +53,7 @@ public class PostHashTagService {
 
     }
 
-    private List<PostHashTag> getPostTags(Post post) {
+    public List<PostHashTag> getPostTags(Post post) {
         return postHashTagRepository.findAllByPostId(post.getId());
     }
 

@@ -66,4 +66,8 @@ public class Post extends BaseEntity {
                 .collect(Collectors.joining(" "));
     }
 
+    public String getForPrintContentHtml() {
+        return contentHtml.replaceAll("toastui-editor-ww-code-block-highlighting", "");
+    }
+
 }

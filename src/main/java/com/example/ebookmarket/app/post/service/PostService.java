@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -80,5 +81,26 @@ public class PostService {
 
         postHashTagService.applyPostTags(post, postTagContents);
 
+    }
+
+    public boolean actorCanHandle(Member member, Post post) {
+        return member.getId().equals(post.getAuthor().getId());
+    }
+
+    public Optional<Post> findById(Long id) {
+        Optional<Post> opPost = postRepository.findById(id);
+
+        if (opPost.isEmpty()) return opPost;
+
+        List<PostHashTag> postHashTags = getPostTags(opPost.get());
+
+        opPost.get().getExtra().put("postHashTags", postHashTags);
+
+        return opPost;
+    }
+
+    private List<PostHashTag> getPostTags(Post post) {
+
+        return postHashTagService.getPostTags(post);
     }
 }
