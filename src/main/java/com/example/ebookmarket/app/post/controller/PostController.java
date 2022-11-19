@@ -5,6 +5,7 @@ import com.example.ebookmarket.app.post.dto.PostFormDto;
 import com.example.ebookmarket.app.post.entity.Post;
 import com.example.ebookmarket.app.post.exception.ActorCanNotModifyException;
 import com.example.ebookmarket.app.post.service.PostService;
+import com.example.ebookmarket.app.postHashTag.entity.PostHashTag;
 import com.example.ebookmarket.app.security.dto.MemberContext;
 import com.example.ebookmarket.util.Util;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Controller
@@ -135,4 +135,17 @@ public class PostController {
         return "post/list";
 
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/tag/{tagContent}")
+    public String tagList(Model model, @PathVariable String tagContent, @AuthenticationPrincipal MemberContext memberContext) {
+
+        List<PostHashTag> postHashTags = postService.getPostTags(memberContext.getMember(), tagContent);
+
+        log.debug(postHashTags.get(0).getPost().toString());
+
+        model.addAttribute("postHashTags", postHashTags);
+
+        return "post/tagList";
+    };
 }

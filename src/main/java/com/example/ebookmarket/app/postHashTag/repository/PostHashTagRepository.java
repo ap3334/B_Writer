@@ -1,5 +1,6 @@
 package com.example.ebookmarket.app.postHashTag.repository;
 
+import com.example.ebookmarket.app.member.entity.Member;
 import com.example.ebookmarket.app.postHashTag.entity.PostHashTag;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -12,4 +13,6 @@ public interface PostHashTagRepository extends JpaRepository<PostHashTag, Long> 
     List<PostHashTag> findAllByPostId(Long id);
 
     Optional<PostHashTag> findByPostIdAndPostKeywordId(Long postId, Long postKeywordId);
+
+    List<PostHashTag> findAllByMemberIdAndPostKeyword_contentOrderByPost_idDesc(Long memberId, String postKeywordContent);
 }

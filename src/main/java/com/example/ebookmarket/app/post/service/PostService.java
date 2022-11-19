@@ -7,7 +7,6 @@ import com.example.ebookmarket.app.post.repository.PostRepository;
 import com.example.ebookmarket.app.postHashTag.entity.PostHashTag;
 import com.example.ebookmarket.app.postHashTag.service.PostHashTagService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,5 +123,23 @@ public class PostService {
 
         return posts;
 
+    }
+
+    public List<PostHashTag> getPostTags(Member member, String postKeywordContent) {
+
+        List<PostHashTag> postHashTags = postHashTagService.getPostTags(member, postKeywordContent);
+
+        loadForPrintDataOnPostTagList(postHashTags);
+
+        return postHashTags;
+    }
+
+    private void loadForPrintDataOnPostTagList(List<PostHashTag> postHashTags) {
+        List<Post> posts = postHashTags
+                .stream()
+                .map(PostHashTag::getPost)
+                .collect(toList());
+
+        loadForPrint(posts);
     }
 }

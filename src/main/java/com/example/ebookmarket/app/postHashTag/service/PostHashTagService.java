@@ -1,5 +1,6 @@
 package com.example.ebookmarket.app.postHashTag.service;
 
+import com.example.ebookmarket.app.member.entity.Member;
 import com.example.ebookmarket.app.post.entity.Post;
 import com.example.ebookmarket.app.postHashTag.entity.PostHashTag;
 import com.example.ebookmarket.app.postHashTag.repository.PostHashTagRepository;
@@ -75,5 +76,10 @@ public class PostHashTagService {
         postHashTagRepository.save(postHashTag);
 
         return postHashTag;
+    }
+
+    public List<PostHashTag> getPostTags(Member member, String postKeywordContent) {
+        return postHashTagRepository.findAllByMemberIdAndPostKeyword_contentOrderByPost_idDesc(member.getId(), postKeywordContent);
+
     }
 }
