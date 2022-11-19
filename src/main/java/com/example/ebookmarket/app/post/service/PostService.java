@@ -116,4 +116,13 @@ public class PostService {
     public void deletePost(Post post) {
         postRepository.delete(post);
     }
+
+    public List<Post> getAllPosts(Long memberId) {
+
+        List<Post> posts = postRepository.findAllByAuthorIdOrderByIdDesc(memberId);
+        loadForPrint(posts);
+
+        return posts;
+
+    }
 }

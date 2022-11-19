@@ -8,6 +8,7 @@ import com.example.ebookmarket.app.post.service.PostService;
 import com.example.ebookmarket.app.security.dto.MemberContext;
 import com.example.ebookmarket.util.Util;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -15,8 +16,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 @RequestMapping("/post")
@@ -81,7 +84,7 @@ public class PostController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("{id}/modify")
+    @PostMapping("/{id}/modify")
     public String modify(@PathVariable Long id, @Valid PostFormDto postFormDto, @AuthenticationPrincipal MemberContext memberContext) {
 
         Post post = postService.findById(id).orElseThrow(() ->
@@ -102,7 +105,7 @@ public class PostController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping("{id}/remove")
+    @PostMapping("/{id}/remove")
     public String remove(@PathVariable Long id, @AuthenticationPrincipal MemberContext memberContext) {
 
         Post post = postService.findById(id).orElseThrow(() ->
@@ -121,4 +124,15 @@ public class PostController {
         return "redirect:/post/list?msg=%s".formatted(msg);
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list")
+    public String list(@AuthenticationPrincipal MemberContext memberContext, Model model) {
+
+        List<Post> posts = postService.getAllPosts(memberContext.getId());
+
+        model.addAttribute("posts", posts);
+
+        return "post/list";
+
+    }
 }
