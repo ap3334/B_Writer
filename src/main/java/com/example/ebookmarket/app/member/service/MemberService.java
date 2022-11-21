@@ -63,6 +63,7 @@ public class MemberService {
 
         Optional<Member> opMember = memberRepository.findById(member.getId());
         opMember.get().setNickname(nickname);
+        opMember.get().setAuthLevel(AuthLevel.AUTHOR);
 
         forceAuthentication(opMember.get());
 

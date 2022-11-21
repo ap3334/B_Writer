@@ -1,5 +1,6 @@
 package com.example.ebookmarket.app.security.dto;
 
+import com.example.ebookmarket.app.member.AuthLevel;
 import com.example.ebookmarket.app.member.entity.Member;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,6 +24,8 @@ public class MemberContext extends User {
 
     private final String nickname;
 
+    private final String authority;
+
     public MemberContext(Member member, List<GrantedAuthority> authorities) {
         super(member.getUsername(), member.getPassword(), authorities);
 
@@ -32,6 +35,8 @@ public class MemberContext extends User {
         this.username = member.getUsername();
         this.email = member.getEmail();
         this.nickname = member.getNickname();
+        this.authority = member.getAuthLevel().name();
+
     }
 
     public Member getMember() {
