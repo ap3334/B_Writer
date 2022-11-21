@@ -5,6 +5,7 @@ import com.example.ebookmarket.app.postKeyword.repository.PostKeywordRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,5 +31,9 @@ public class PostKeywordService {
 
         return postKeyword;
 
+    }
+
+    public List<PostKeyword> findByMemberId(Long id) {
+        return postKeywordRepository.getQslAllByAuthorId(id);
     }
 }

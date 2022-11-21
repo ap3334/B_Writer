@@ -25,4 +25,8 @@ public class PostKeyword extends BaseEntity {
         return "/post/tag/" + content;
     }
 
+    public long getExtra_postTagsCount() {
+        return (long) getExtra().get("postHashTagsCount");
+    }
+
 }
