@@ -26,7 +26,7 @@ public class ProductController {
 
     private final PostKeywordService postKeywordService;
 
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated() and hasAuthority('AUTHOR')")
     @GetMapping("/create")
     public String createForm(Model model, @AuthenticationPrincipal MemberContext memberContext) {
 
