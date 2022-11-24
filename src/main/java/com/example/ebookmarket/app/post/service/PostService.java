@@ -26,9 +26,9 @@ public class PostService {
     private final PostHashTagService postHashTagService;
 
 
-    public List<Post> getAllPostsLatest100() {
+    public List<Post> getAllPostsLatest100ById(Long id) {
 
-        List allPosts = postRepository.findTop100ByOrderByIdDesc();
+        List allPosts = postRepository.findTop100ByAuthorIdOrderByIdDesc(id);
 
         loadForPrint(allPosts);
 
