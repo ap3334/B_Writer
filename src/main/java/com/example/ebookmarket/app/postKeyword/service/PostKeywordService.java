@@ -36,4 +36,8 @@ public class PostKeywordService {
     public List<PostKeyword> findByMemberId(Long id) {
         return postKeywordRepository.getQslAllByAuthorId(id);
     }
+
+    public PostKeyword findById(Long postKeywordId) {
+        return postKeywordRepository.findById(postKeywordId).orElseThrow(() -> new IllegalArgumentException("해당하는 키워드의 글은 존재하지 않습니다."));
+    }
 }
