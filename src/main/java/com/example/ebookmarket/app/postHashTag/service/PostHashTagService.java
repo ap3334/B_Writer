@@ -82,4 +82,8 @@ public class PostHashTagService {
         return postHashTagRepository.findAllByMemberIdAndPostKeyword_contentOrderByPost_idDesc(member.getId(), postKeywordContent);
 
     }
+
+    public List<PostHashTag> getPostTags(Long authorId, Long postKeywordId) {
+        return postHashTagRepository.findAllByMemberIdAndPostKeywordIdOrderByPost_idDesc(authorId, postKeywordId);
+    }
 }

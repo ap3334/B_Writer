@@ -1,6 +1,7 @@
 package com.example.ebookmarket.app.product.controller;
 
 import com.example.ebookmarket.app.member.entity.Member;
+import com.example.ebookmarket.app.post.entity.Post;
 import com.example.ebookmarket.app.postKeyword.entity.PostKeyword;
 import com.example.ebookmarket.app.postKeyword.service.PostKeywordService;
 import com.example.ebookmarket.app.product.dto.ProductCreateDto;
@@ -15,10 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -53,6 +51,23 @@ public class ProductController {
         String msg = Util.url.encode("상품이 등록되었습니다.");
 
         return "redirect:/product/%d?msg=%s".formatted(product.getId(), msg);
+
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
+    public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal MemberContext memberContext) {
+
+        Member user = memberContext.getMember();
+        Product product = productService.getProduct(id);
+        List<Post> posts = productService.findPostsByProduct(product);
+
+
+        model.addAttribute("product", product);
+        model.addAttribute("user", user);
+        model.addAttribute("posts", posts);
+
+        return "product/detail";
 
     }
 

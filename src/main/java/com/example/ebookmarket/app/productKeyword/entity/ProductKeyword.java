@@ -17,4 +17,7 @@ public class ProductKeyword extends BaseEntity {
 
     private String content;
 
+    public Object getListUrl() {
+        return "/product/tag/" + content;
+    }
 }
