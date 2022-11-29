@@ -71,4 +71,19 @@ public class ProductController {
 
     }
 
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/list")
+    public String list(Model model, @AuthenticationPrincipal MemberContext memberContext) {
+
+        Member member = memberContext.getMember();
+
+        List<Product> products = productService.findAllForPrintByOrderByIdDesc(member);
+
+        model.addAttribute("member", member);
+        model.addAttribute("products", products);
+
+        return "product/list";
+
+    }
+
 }

@@ -6,6 +6,7 @@ import com.example.ebookmarket.app.postHashTag.entity.PostHashTag;
 import com.example.ebookmarket.app.postHashTag.repository.PostHashTagRepository;
 import com.example.ebookmarket.app.postKeyword.entity.PostKeyword;
 import com.example.ebookmarket.app.postKeyword.service.PostKeywordService;
+import com.example.ebookmarket.app.productHashTag.repository.ProductHashTagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -86,4 +87,5 @@ public class PostHashTagService {
     public List<PostHashTag> getPostTags(Long authorId, Long postKeywordId) {
         return postHashTagRepository.findAllByMemberIdAndPostKeywordIdOrderByPost_idDesc(authorId, postKeywordId);
     }
+
 }

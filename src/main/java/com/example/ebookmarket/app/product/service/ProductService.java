@@ -16,7 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @RequiredArgsConstructor
@@ -69,5 +73,41 @@ public class ProductService {
                 .stream()
                 .map(PostHashTag::getPost)
                 .collect(Collectors.toList());
+    }
+
+    public List<Product> findAllForPrintByOrderByIdDesc(Member member) {
+
+        List<Product> products = findAllByOrderByIdDesc();
+
+        loadForPrintData(products, member);
+
+        return products;
+    }
+
+    private void loadForPrintData(List<Product> products, Member member) {
+        long[] ids = products
+                .stream()
+                .mapToLong(Product::getId)
+                .toArray();
+
+        List<ProductHashTag> productTagsByProductIds = productHashTagService.getProductTagsByProductIdIn(ids);
+
+        Map<Long, List<ProductHashTag>> productTagsByProductIdMap = productTagsByProductIds.stream()
+                .collect(groupingBy(
+                        productHashTag -> productHashTag.getProduct().getId(), toList()
+                ));
+
+        products.stream().forEach(product -> {
+            List<ProductHashTag> productHashTags = productTagsByProductIdMap.get(product.getId());
+
+            if (productHashTags == null || productHashTags.size() == 0) return;
+
+            product.getExtra().put("productHashTags", productHashTags);
+        });
+    }
+
+    private List<Product> findAllByOrderByIdDesc() {
+
+        return productRepository.findAllByOrderByIdDesc();
     }
 }
