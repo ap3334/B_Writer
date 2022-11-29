@@ -76,4 +76,8 @@ public class ProductHashTagService {
     public List<ProductHashTag> getProductTagsByProductIdIn(long[] ids) {
         return productHashTagRepository.findAllByProductIdIn(ids);
     }
+
+    public List<ProductHashTag> getProductHashTags(String tagContent) {
+        return productHashTagRepository.findAllByProductKeyword_contentOrderByProduct_idDesc(tagContent);
+    }
 }

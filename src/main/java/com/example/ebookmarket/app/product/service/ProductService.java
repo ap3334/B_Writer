@@ -12,6 +12,7 @@ import com.example.ebookmarket.app.product.repository.ProductRepository;
 import com.example.ebookmarket.app.productHashTag.entity.ProductHashTag;
 import com.example.ebookmarket.app.productHashTag.service.ProductHashTagService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -75,16 +77,16 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    public List<Product> findAllForPrintByOrderByIdDesc(Member member) {
+    public List<Product> findAllForPrintByOrderByIdDesc() {
 
         List<Product> products = findAllByOrderByIdDesc();
 
-        loadForPrintData(products, member);
+        loadForPrintData(products);
 
         return products;
     }
 
-    private void loadForPrintData(List<Product> products, Member member) {
+    private void loadForPrintData(List<Product> products) {
         long[] ids = products
                 .stream()
                 .mapToLong(Product::getId)
@@ -110,4 +112,24 @@ public class ProductService {
 
         return productRepository.findAllByOrderByIdDesc();
     }
+
+    public List<ProductHashTag> getProductTags(String tagContent) {
+
+        List<ProductHashTag> productHashTags = productHashTagService.getProductHashTags(tagContent);
+
+        loadForPrintDataOnProductHashTagList(productHashTags);
+
+        return productHashTags;
+    }
+
+    private void loadForPrintDataOnProductHashTagList(List<ProductHashTag> productHashTags) {
+
+        List<Product> products = productHashTags.stream()
+                .map(ProductHashTag::getProduct)
+                .collect(toList());
+
+        loadForPrintData(products);
+
+    }
+
 }

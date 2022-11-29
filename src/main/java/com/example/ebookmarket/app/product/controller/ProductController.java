@@ -7,6 +7,7 @@ import com.example.ebookmarket.app.postKeyword.service.PostKeywordService;
 import com.example.ebookmarket.app.product.dto.ProductCreateDto;
 import com.example.ebookmarket.app.product.entity.Product;
 import com.example.ebookmarket.app.product.service.ProductService;
+import com.example.ebookmarket.app.productHashTag.entity.ProductHashTag;
 import com.example.ebookmarket.app.security.dto.MemberContext;
 import com.example.ebookmarket.util.Util;
 import lombok.Getter;
@@ -71,19 +72,25 @@ public class ProductController {
 
     }
 
-    @PreAuthorize("isAuthenticated()")
     @GetMapping("/list")
-    public String list(Model model, @AuthenticationPrincipal MemberContext memberContext) {
+    public String list(Model model) {
 
-        Member member = memberContext.getMember();
+        List<Product> products = productService.findAllForPrintByOrderByIdDesc();
 
-        List<Product> products = productService.findAllForPrintByOrderByIdDesc(member);
-
-        model.addAttribute("member", member);
         model.addAttribute("products", products);
 
         return "product/list";
 
+    }
+
+    @GetMapping("/tag/{tagContent}")
+    public String tagList(Model model, @PathVariable String tagContent) {
+
+        List<ProductHashTag> productHashTags = productService.getProductTags(tagContent);
+
+        model.addAttribute("productHashTags", productHashTags);
+
+        return "product/tagList";
     }
 
 }
