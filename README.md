@@ -22,9 +22,6 @@
 - **Build Tool** : Gradle
 - **Database** : MySQL
 
-<img width="702" alt="스크린샷 2021-12-22 오전 2 02 55" src="https://user-images.githubusercontent.com/58363663/146969801-1faa9a10-9e61-4331-b3ef-40cbf3b820e0.png">
-
-
 ## 🧩 Backend Architecture
 
 ---
