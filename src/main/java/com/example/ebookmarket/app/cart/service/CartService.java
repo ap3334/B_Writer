@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -34,6 +36,14 @@ public class CartService {
         cartItemRepository.save(cartItem);
 
         return cartItem;
+
+    }
+
+    public List<CartItem> getCartItems(Member member) {
+
+        List<CartItem> cartItems = cartItemRepository.findByMemberId(member.getId());
+
+        return cartItems;
 
     }
 }

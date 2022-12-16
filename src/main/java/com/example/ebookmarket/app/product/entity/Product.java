@@ -1,6 +1,7 @@
 package com.example.ebookmarket.app.product.entity;
 
 import com.example.ebookmarket.app.base.BaseEntity;
+import com.example.ebookmarket.app.cart.entity.CartItem;
 import com.example.ebookmarket.app.member.entity.Member;
 import com.example.ebookmarket.app.postKeyword.entity.PostKeyword;
 import com.example.ebookmarket.app.productHashTag.entity.ProductHashTag;
@@ -63,6 +64,20 @@ public class Product extends BaseEntity {
                 })
                 .sorted()
                 .collect(Collectors.joining(" "));
+    }
+
+    public CartItem getExtra_actor_cartItem() {
+        Map<String, Object> extra = getExtra();
+
+        if (extra.containsKey("actor_cartItem") == false) {
+            return null;
+        }
+
+        return (CartItem)extra.get("actor_cartItem");
+    }
+
+    public boolean getExtra_actor_hasInCart() {
+        return getExtra_actor_cartItem() != null;
     }
 
 }
