@@ -64,7 +64,7 @@
                 <span class="ml-[2px] hidden lg:block" th:text="${#authentication.principal.username}"></span>
             </a>
 
-            <a href="/cart/items" class="inline-flex" sec:authorize="isAuthenticated()">
+            <a href="/cart/list" class="inline-flex" sec:authorize="isAuthenticated()">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="ml-[2px] hidden lg:block">
                     장바구니

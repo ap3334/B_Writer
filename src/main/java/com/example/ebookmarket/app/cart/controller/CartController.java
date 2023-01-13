@@ -2,6 +2,7 @@ package com.example.ebookmarket.app.cart.controller;
 
 import com.example.ebookmarket.app.cart.entity.CartItem;
 import com.example.ebookmarket.app.cart.service.CartService;
+import com.example.ebookmarket.app.member.entity.Member;
 import com.example.ebookmarket.app.security.dto.MemberContext;
 import com.example.ebookmarket.util.Util;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -44,6 +46,29 @@ public class CartController {
 
         return "cart/items";
 
+    }
+
+    @PostMapping("/removeItems")
+    @PreAuthorize("isAuthenticated()")
+    public String removeItems(String ids, @AuthenticationPrincipal MemberContext memberContext) {
+
+        Member member = memberContext.getMember();
+
+        String[] idsArr = ids.split(",");
+
+        Arrays.stream(idsArr)
+                .mapToLong(Long::parseLong)
+                .forEach(id -> {
+                    CartItem cartItem = cartService.findItemById(id).orElse(null);
+
+                    if (cartService.actorCanDelete(member, cartItem)) {
+                        cartService.removeItem(cartItem);
+                    }
+                });
+
+        String msg = Util.url.encode("건의 품목을 삭제하였습니다.");
+
+        return "redirect:/cart/list?msg=%d%s".formatted(idsArr.length, msg);
     }
 
 }
